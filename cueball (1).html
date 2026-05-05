@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CueBall — India's Competitive Pool Network</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #181818;
+    --surface3: #222222;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --gold: #c8a84b;
+    --gold-dim: #8a6f2e;
+    --gold-bright: #f0cd76;
+    --green: #22c55e;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --text: #f0ece3;
+    --text-muted: #888580;
+    --text-dim: #555250;
+    --accent: #c8a84b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--text); }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-cta {
+    background: var(--gold);
+    color: #0a0a0a;
+    padding: 0.55rem 1.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: background 0.2s;
+  }
+
+  .nav-cta:hover { background: var(--gold-bright); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 20%, rgba(200,168,75,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(200,168,75,0.04) 0%, transparent 60%);
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.8rem;
+    opacity: 0.9;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 14vw, 12rem);
+    line-height: 0.88;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    position: relative;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 2rem auto 0;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: #0a0a0a;
+    padding: 0.9rem 2.2rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover { background: var(--gold-bright); transform: translateY(-1px); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text-muted);
+    padding: 0.9rem 2.2rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid var(--border2);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-outline:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+  /* POOL TABLE GRAPHIC */
+  .pool-visual {
+    margin: 3rem auto 0;
+    width: 220px;
+    height: 120px;
+    position: relative;
+  }
+
+  .pool-visual svg { width: 100%; height: 100%; }
+
+  /* STATS BAR */
+  .stats-bar {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: center;
+    gap: 6rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 0.3rem;
+  }
+
+  /* SECTIONS */
+  section { padding: 6rem 3rem; max-width: 1100px; margin: 0 auto; }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 0.04em;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .section-title em { font-style: normal; color: var(--gold); }
+
+  .section-desc {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.8;
+    max-width: 500px;
+    font-weight: 300;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border2), transparent);
+    margin: 0 3rem;
+  }
+
+  /* HOW IT WORKS */
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 4rem;
+  }
+
+  .how-step {
+    background: var(--surface);
+    padding: 2.5rem 2rem;
+    transition: background 0.2s;
+  }
+
+  .how-step:hover { background: var(--surface2); }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    color: var(--border2);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .step-icon { font-size: 1.5rem; margin-bottom: 0.8rem; }
+
+  .step-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .step-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* RANKING SECTION */
+  .ranking-section {
+    padding: 6rem 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ranking-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 3rem;
+  }
+
+  .tiers-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 4rem;
+    align-items: start;
+  }
+
+  .tier-cards { display: flex; flex-direction: column; gap: 1rem; }
+
+  .tier-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    background: var(--surface2);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .tier-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+
+  .tier-card.beginner::before { background: #3b82f6; }
+  .tier-card.intermediate::before { background: #a855f7; }
+  .tier-card.elite::before { background: var(--gold); }
+
+  .tier-card:hover { border-color: var(--border2); }
+
+  .tier-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+  }
+
+  .tier-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.05em;
+  }
+
+  .tier-card.beginner .tier-name { color: #60a5fa; }
+  .tier-card.intermediate .tier-name { color: #c084fc; }
+  .tier-card.elite .tier-name { color: var(--gold); }
+
+  .tier-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    letter-spacing: 0.1em;
+  }
+
+  .tier-card.beginner .tier-badge { background: rgba(59,130,246,0.15); color: #60a5fa; }
+  .tier-card.intermediate .tier-badge { background: rgba(168,85,247,0.15); color: #c084fc; }
+  .tier-card.elite .tier-badge { background: rgba(200,168,75,0.15); color: var(--gold); }
+
+  .tier-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+  .tier-promo {
+    margin-top: 0.8rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+  }
+
+  .tier-promo strong { color: var(--gold-dim); }
+
+  /* LEADERBOARD */
+  .leaderboard {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .lb-header {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .lb-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+  }
+
+  .lb-city {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .lb-row {
+    display: grid;
+    grid-template-columns: 40px 1fr auto auto;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    gap: 1rem;
+    transition: background 0.15s;
+  }
+
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row:hover { background: rgba(255,255,255,0.03); }
+
+  .lb-row.you { background: rgba(200,168,75,0.05); }
+  .lb-row.you:hover { background: rgba(200,168,75,0.08); }
+
+  .lb-rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .lb-rank.top1 { color: var(--gold); }
+  .lb-rank.top2 { color: #9ca3af; }
+  .lb-rank.top3 { color: #b45309; }
+
+  .lb-player { display: flex; align-items: center; gap: 0.8rem; }
+
+  .avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .lb-name { font-size: 0.9rem; font-weight: 400; color: var(--text); }
+  .lb-name small { display: block; font-size: 0.72rem; color: var(--text-dim); font-weight: 300; }
+
+  .lb-elo {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: right;
+  }
+
+  .lb-elo strong { display: block; font-size: 0.9rem; color: var(--text); }
+
+  .lb-trend {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    text-align: right;
+  }
+
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .flat { color: var(--text-dim); }
+
+  .you-tag {
+    font-size: 0.65rem;
+    background: rgba(200,168,75,0.15);
+    color: var(--gold);
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+  }
+
+  /* FRIENDS SECTION */
+  .friends-section { padding: 6rem 3rem; max-width: 1100px; margin: 0 auto; }
+
+  .friends-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 4rem;
+    align-items: start;
+  }
+
+  .friend-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .friend-card-header {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .friend-card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.06em;
+    color: var(--text);
+  }
+
+  .add-friend-btn {
+    background: transparent;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    padding: 0.35rem 0.9rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    transition: all 0.2s;
+  }
+
+  .add-friend-btn:hover { background: rgba(200,168,75,0.1); }
+
+  .friend-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    gap: 1rem;
+    transition: background 0.15s;
+  }
+
+  .friend-row:last-child { border-bottom: none; }
+  .friend-row:hover { background: rgba(255,255,255,0.02); }
+
+  .friend-info { display: flex; align-items: center; gap: 0.8rem; }
+  .friend-name { font-size: 0.9rem; color: var(--text); }
+  .friend-name small { display: block; font-size: 0.72rem; color: var(--text-dim); }
+
+  .online-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .online-dot.online { background: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.5); }
+  .online-dot.offline { background: var(--text-dim); }
+
+  .friend-rank-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 3px;
+    text-align: center;
+  }
+
+  .rank-b { background: rgba(59,130,246,0.15); color: #60a5fa; }
+  .rank-i { background: rgba(168,85,247,0.15); color: #c084fc; }
+  .rank-e { background: rgba(200,168,75,0.15); color: var(--gold); }
+
+  /* CHALLENGE PANEL */
+  .challenge-panel {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+  }
+
+  .challenge-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  .challenge-player {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--surface3);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+
+  .challenge-player .avatar { width: 40px; height: 40px; font-size: 0.8rem; }
+
+  .vs-divider {
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    margin: 0.3rem 0;
+  }
+
+  .bid-section { margin-top: 1.5rem; }
+
+  .bid-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.6rem;
+  }
+
+  .bid-input-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+
+  .rupee { font-size: 1.1rem; color: var(--text-muted); }
+
+  .bid-input {
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 1.3rem;
+    padding: 0.5rem 0.8rem;
+    width: 140px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .bid-input:focus { border-color: var(--gold-dim); }
+
+  .bid-note {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .bid-note strong { color: var(--text-muted); }
+
+  /* VENUE SECTION */
+  .venue-map-section { padding: 6rem 0; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+  .venue-inner { max-width: 1100px; margin: 0 auto; padding: 0 3rem; }
+
+  .venue-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 4rem; align-items: start; }
+
+  .map-mockup {
+    background: #0d1a0d;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    height: 360px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .map-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(34,197,94,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34,197,94,0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .map-label {
+    position: absolute;
+    top: 1rem; left: 1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(34,197,94,0.5);
+    letter-spacing: 0.15em;
+  }
+
+  .map-pin {
+    position: absolute;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .map-pin:hover { transform: translate(-50%, -50%) scale(1.4); }
+
+  .map-pin::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    opacity: 0.3;
+  }
+
+  .pin-green { background: var(--green); box-shadow: 0 0 10px rgba(34,197,94,0.6); }
+  .pin-yellow { background: #f59e0b; box-shadow: 0 0 10px rgba(245,158,11,0.6); }
+  .pin-red { background: var(--red); box-shadow: 0 0 10px rgba(239,68,68,0.6); }
+
+  .pin-green::after { background: var(--green); }
+  .pin-yellow::after { background: #f59e0b; }
+  .pin-red::after { background: var(--red); }
+
+  .map-tooltip {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    font-size: 0.78rem;
+    min-width: 150px;
+    pointer-events: none;
+  }
+
+  .map-tooltip-name { font-weight: 500; color: var(--text); margin-bottom: 0.25rem; }
+  .map-tooltip-dist { color: var(--text-dim); font-size: 0.7rem; }
+  .map-tooltip-avail { font-size: 0.7rem; margin-top: 0.4rem; }
+
+  .venue-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .venue-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .venue-card:hover { border-color: var(--border2); }
+
+  .venue-name { font-weight: 500; font-size: 0.9rem; color: var(--text); margin-bottom: 0.2rem; }
+  .venue-dist { font-size: 0.75rem; color: var(--text-dim); }
+  .venue-details { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem; }
+
+  .avail-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .avail-dot.green { background: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+  .avail-dot.yellow { background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.4); }
+  .avail-dot.red { background: var(--red); box-shadow: 0 0 6px rgba(239,68,68,0.4); }
+
+  .legend { display: flex; gap: 1.5rem; margin-top: 1.2rem; }
+  .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; color: var(--text-dim); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* PRICING */
+  .pricing-section { padding: 6rem 3rem; max-width: 1100px; margin: 0 auto; }
+
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 4rem; }
+
+  .price-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .price-card.featured {
+    border-color: var(--gold-dim);
+    background: rgba(200,168,75,0.04);
+  }
+
+  .price-tag-label {
+    position: absolute;
+    top: -1px; right: 1.5rem;
+    background: var(--gold);
+    color: #0a0a0a;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 0 0 4px 4px;
+    text-transform: uppercase;
+  }
+
+  .price-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .price-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .price-amount span { font-size: 1.2rem; color: var(--text-dim); }
+
+  .price-period { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 1.5rem; }
+
+  .price-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .price-features li {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .price-features li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold-dim);
+  }
+
+  .commission-box {
+    margin-top: 4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .commission-flow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .flow-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.8rem 1.2rem;
+    text-align: center;
+  }
+
+  .flow-box .amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .flow-box .desc { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.2rem; letter-spacing: 0.05em; }
+
+  .flow-arrow { font-size: 1.2rem; color: var(--text-dim); }
+
+  /* INTEGRITY SECTION */
+  .integrity-section { padding: 6rem 3rem; max-width: 1100px; margin: 0 auto; }
+
+  .integrity-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 4rem; }
+
+  .integrity-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    transition: border-color 0.2s;
+  }
+
+  .integrity-card:hover { border-color: var(--border2); }
+
+  .integrity-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .integrity-card-title { font-weight: 500; font-size: 1rem; color: var(--text); margin-bottom: 0.5rem; }
+  .integrity-card-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+
+  /* QR FLOW */
+  .qr-flow {
+    display: flex;
+    gap: 0;
+    margin-top: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .qr-step {
+    flex: 1;
+    padding: 1.2rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .qr-step:last-child { border-right: none; }
+
+  .qr-step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--gold-dim);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .qr-step-label { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+
+  /* BAN SYSTEM */
+  .ban-tiers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 1rem;
+  }
+
+  .ban-tier {
+    padding: 1rem;
+    background: var(--surface2);
+    text-align: center;
+  }
+
+  .ban-tier-name { font-size: 0.75rem; font-weight: 500; margin-bottom: 0.3rem; }
+  .ban-tier-desc { font-size: 0.65rem; color: var(--text-dim); line-height: 1.5; }
+
+  /* SEASON */
+  .season-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .season-info { display: flex; align-items: center; gap: 2rem; }
+  .season-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.12em; text-transform: uppercase; }
+  .season-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--gold); letter-spacing: 0.05em; }
+
+  .season-timer { display: flex; gap: 1.5rem; }
+  .timer-block { text-align: center; }
+  .timer-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--text); line-height: 1; }
+  .timer-unit { font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* FOOTER */
+  footer {
+    padding: 4rem 3rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-tagline { font-size: 0.85rem; color: var(--text-dim); }
+
+  .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-end; }
+
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--text-muted); }
+
+  /* ANIMATIONS */
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .pulse { animation: pulse-dot 2s ease-in-out infinite; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section, .friends-section, .pricing-section, .integrity-section { padding: 4rem 1.5rem; }
+    .ranking-inner, .venue-inner { padding: 0 1.5rem; }
+    .ranking-inner { padding-top: 4rem; }
+    .tiers-layout, .friends-layout, .venue-layout { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .integrity-grid { grid-template-columns: 1fr; }
+    .ban-tiers { grid-template-columns: repeat(2, 1fr); }
+    .stats-bar { gap: 3rem; }
+    .commission-box { grid-template-columns: 1fr; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Cue<span>Ball</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#ranking">Rankings</a></li>
+    <li><a href="#friends">Friends</a></li>
+    <li><a href="#venues">Venues</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="#" class="nav-cta">Download App</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding-top:8rem; padding-bottom:4rem; max-width:100%;">
+  <div class="hero-bg"></div>
+  <div class="hero-eyebrow">India's Competitive Pool Network</div>
+  <h1>RACK.<br>RIVAL.<em><br>REIGN.</em></h1>
+  <p class="hero-sub">Find partners, pay a match entry fee, winner takes all — pool as a real competitive sport. Pure skill. No luck.</p>
+  <div class="hero-actions">
+    <a href="#" class="btn-primary">Join the Network</a>
+    <a href="#how" class="btn-outline">See How It Works</a>
+  </div>
+  <div class="pool-visual" style="margin-top:3.5rem; animation: float 4s ease-in-out infinite;">
+    <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="4" width="212" height="102" rx="8" fill="#0d2010" stroke="#1a4020" stroke-width="8"/>
+      <rect x="12" y="12" width="196" height="86" rx="4" fill="#0f2912"/>
+      <!-- pockets -->
+      <circle cx="16" cy="16" r="6" fill="#0a0a0a"/>
+      <circle cx="204" cy="16" r="6" fill="#0a0a0a"/>
+      <circle cx="16" cy="94" r="6" fill="#0a0a0a"/>
+      <circle cx="204" cy="94" r="6" fill="#0a0a0a"/>
+      <circle cx="110" cy="14" r="5" fill="#0a0a0a"/>
+      <circle cx="110" cy="96" r="5" fill="#0a0a0a"/>
+      <!-- balls -->
+      <circle cx="70" cy="55" r="9" fill="#f0ece3"/>
+      <circle cx="145" cy="45" r="8" fill="#c8a84b"/>
+      <circle cx="160" cy="60" r="8" fill="#ef4444"/>
+      <circle cx="150" cy="72" r="8" fill="#3b82f6"/>
+      <circle cx="133" cy="55" r="8" fill="#a855f7"/>
+      <circle cx="145" cy="67" r="8" fill="#22c55e"/>
+      <!-- cue -->
+      <line x1="30" y1="55" x2="60" y2="55" stroke="#c8a84b" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+    </svg>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num">5,000+</div>
+    <div class="stat-label">Active Players</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">200+</div>
+    <div class="stat-label">Partner Venues</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">12</div>
+    <div class="stat-label">Cities Live</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">3–4 km</div>
+    <div class="stat-label">Avg Table Distance</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-tag">// process</div>
+  <h2 class="section-title">HOW IT <em>WORKS</em></h2>
+  <p class="section-desc">From finding a partner to collecting your winnings — the full flow in four steps.</p>
+  <div class="how-grid">
+    <div class="how-step">
+      <div class="step-num">01</div>
+      <div class="step-title">Find a Partner or Venue</div>
+      <div class="step-desc">Use GPS to find players nearby and open tables within 3–4 km. Filter by tier so you always play fair competition.</div>
+    </div>
+    <div class="how-step">
+      <div class="step-num">02</div>
+      <div class="step-title">Set the Entry Fee</div>
+      <div class="step-desc">Both players put in a match entry fee — minimum ₹50, custom amount. Winner takes all (90%). CueBall keeps a 10% platform fee.</div>
+    </div>
+    <div class="how-step">
+      <div class="step-num">03</div>
+      <div class="step-title">QR Check-In & Play</div>
+      <div class="step-desc">Scan the venue QR on arrival. Play your Best of 3 or Best of 5 — venue host monitors the match for fair play.</div>
+    </div>
+    <div class="how-step">
+      <div class="step-num">04</div>
+      <div class="step-title">Result Confirmed & Ranked</div>
+      <div class="step-desc">Venue host confirms the result. ELO updates instantly based on win/loss, streak, and games per match. Leaderboard refreshed.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RANKING -->
+<div class="ranking-section" id="ranking">
+  <div class="ranking-inner">
+    <div class="section-tag">// competitive structure</div>
+    <h2 class="section-title">THE <em>RANKING</em> SYSTEM</h2>
+    <p class="section-desc">Three tiers. City-wise leaderboards. Top 10% of every tier gets promoted each season. Compete where you belong.</p>
+
+    <div class="tiers-layout">
+      <div class="tier-cards">
+        <div class="tier-card beginner">
+          <div class="tier-header">
+            <div class="tier-name">Beginner</div>
+            <div class="tier-badge">OPEN</div>
+          </div>
+          <div class="tier-desc">Entry level for new players. Build your record, develop your game. Locality-level rankings with city visibility.</div>
+          <div class="tier-promo">Season promotion: <strong>Top 10% → Intermediate</strong></div>
+        </div>
+        <div class="tier-card intermediate">
+          <div class="tier-header">
+            <div class="tier-name">Intermediate</div>
+            <div class="tier-badge">RANKED</div>
+          </div>
+          <div class="tier-desc">Experienced players. Higher bid floors, tougher competition, city leaderboard prominence. Algorithm weights win streaks heavily.</div>
+          <div class="tier-promo">Season promotion: <strong>Top 10% → Elite</strong></div>
+        </div>
+        <div class="tier-card elite">
+          <div class="tier-header">
+            <div class="tier-name">Elite</div>
+            <div class="tier-badge">INVITE</div>
+          </div>
+          <div class="tier-desc">City's best. Access to exclusive tournaments, sponsored prize pools, and an 18+ custom stakes section. Privileges for dominance.</div>
+          <div class="tier-promo" style="color:var(--gold-dim);">Top rank earns <strong style="color:var(--gold);">sponsored perks + equipment</strong></div>
+        </div>
+
+        <!-- Season info -->
+        <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:1.5rem;">
+          <div style="font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); margin-bottom:0.6rem; font-family:'Space Mono',monospace;">ELO Algorithm Factors</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+            <div style="font-size:0.8rem; color:var(--text-muted); padding:0.4rem 0; border-bottom:1px solid var(--border);">Win streak</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); padding:0.4rem 0; border-bottom:1px solid var(--border);">Match frequency</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); padding:0.4rem 0; border-bottom:1px solid var(--border);">Win/Loss ratio</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); padding:0.4rem 0; border-bottom:1px solid var(--border);">Games per match</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); padding:0.4rem 0;">Opponent tier</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); padding:0.4rem 0;">Recency weight</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE LEADERBOARD -->
+      <div class="leaderboard">
+        <div class="lb-header">
+          <div>
+            <div class="lb-title">🏆 Lucknow — Elite Tier</div>
+            <div class="lb-city" style="margin-top:0.3rem;">SEASON 3 · 47 DAYS REMAINING</div>
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-direction:column; align-items:flex-end;">
+            <select style="background:var(--surface3); border:1px solid var(--border); color:var(--text-muted); font-size:0.72rem; padding:0.3rem 0.6rem; border-radius:4px; font-family:'DM Sans',sans-serif;">
+              <option>Elite Tier</option>
+              <option>Intermediate</option>
+              <option>Beginner</option>
+            </select>
+            <select style="background:var(--surface3); border:1px solid var(--border); color:var(--text-muted); font-size:0.72rem; padding:0.3rem 0.6rem; border-radius:4px; font-family:'DM Sans',sans-serif;">
+              <option>Lucknow</option>
+              <option>Delhi</option>
+              <option>Mumbai</option>
+              <option>Pune</option>
+              <option>Bangalore</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="lb-row">
+          <div class="lb-rank top1">#1</div>
+          <div class="lb-player">
+            <div class="avatar" style="background:rgba(200,168,75,0.2); color:var(--gold);">AK</div>
+            <div><div class="lb-name">Arjun Kapoor<small>Hazratganj · 18W 3L</small></div></div>
+          </div>
+          <div class="lb-elo"><strong>2,340</strong>ELO</div>
+          <div class="lb-trend up">▲ 12</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank top2">#2</div>
+          <div class="lb-player">
+            <div class="avatar" style="background:rgba(155,155,155,0.15); color:#9ca3af;">RS</div>
+            <div><div class="lb-name">Rohan Singh<small>Gomti Nagar · 15W 5L</small></div></div>
+          </div>
+          <div class="lb-elo"><strong>2,280</strong>ELO</div>
+          <div class="lb-trend up">▲ 5</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank top3">#3</div>
+          <div class="lb-player">
+            <div class="avatar" style="background:rgba(180,90,9,0.2); color:#d97706;">PV</div>
+            <div><div class="lb-name">Priya Verma<small>Aliganj · 14W 4L</small></div></div>
+          </div>
+          <div class="lb-elo"><strong>2,215</strong>ELO</div>
+          <div class="lb-trend down">▼ 3</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">#4</div>
+          <div class="lb-player">
+            <div class="avatar" style="background:rgba(59,130,246,0.15); color:#60a5fa;">SK</div>
+            <div><div class="lb-name">Siddharth Kumar<small>Indira Nagar · 12W 6L</small></div></div>
+          </div>
+          <div class="lb-elo"><strong>2,145</strong>ELO</div>
+          <div class="lb-trend flat">— 0</div>
+        </div>
+        <div class="lb-row you">
+          <div class="lb-rank">#7</div>
+          <div class="lb-player">
+            <div class="avatar" style="background:rgba(200,168,75,0.15); color:var(--gold);">YO</div>
+            <div>
+              <div class="lb-name" style="display:flex; align-items:center; gap:0.5rem;">
+                You <span class="you-tag">YOU</span>
+              </div>
+              <small style="font-size:0.72rem; color:var(--text-dim);">Hazratganj · 9W 5L</small>
+            </div>
+          </div>
+          <div class="lb-elo"><strong>1,998</strong>ELO</div>
+          <div class="lb-trend up">▲ 22</div>
+        </div>
+        <div style="padding:1rem 1.5rem; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.75rem; color:var(--text-dim);">Showing 5 of 48 players</span>
+          <button onclick="alert('Full leaderboard coming in app!')" style="background:transparent; border:1px solid var(--border2); color:var(--text-muted); font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:4px; cursor:pointer; font-family:'DM Sans',sans-serif;">View All →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FRIENDS SECTION -->
+<section class="friends-section" id="friends" style="max-width:1100px;">
+  <div class="section-tag">// social layer</div>
+  <h2 class="section-title">FRIENDS &amp; <em>RIVALRIES</em></h2>
+  <p class="section-desc">Add friends, track their rank, challenge them directly, and build rivalries that last the whole season.</p>
+
+  <div class="friends-layout">
+    <!-- FRIENDS LIST -->
+    <div>
+      <div class="friend-card">
+        <div class="friend-card-header">
+          <div class="friend-card-title">My Squad</div>
+          <button class="add-friend-btn" onclick="addFriend()">+ Add Friend</button>
+        </div>
+        <div id="friends-list">
+          <div class="friend-row">
+            <div class="friend-info">
+              <div class="online-dot online pulse"></div>
+              <div class="avatar" style="width:32px;height:32px;background:rgba(168,85,247,0.2);color:#c084fc;font-size:0.65rem;">RS</div>
+              <div>
+                <div class="friend-name">Rohan Singh <span class="you-tag" style="font-size:0.6rem;">#2 City</span></div>
+                <small style="font-size:0.7rem;color:var(--text-dim);">Online · Gomti Nagar</small>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div class="friend-rank-badge rank-e">Elite</div>
+              <div style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--text-dim);margin-top:0.3rem;">2,280 ELO</div>
+            </div>
+          </div>
+          <div class="friend-row">
+            <div class="friend-info">
+              <div class="online-dot offline"></div>
+              <div class="avatar" style="width:32px;height:32px;background:rgba(59,130,246,0.15);color:#60a5fa;font-size:0.65rem;">AM</div>
+              <div>
+                <div class="friend-name">Ankit Mishra</div>
+                <small style="font-size:0.7rem;color:var(--text-dim);">Last seen 2h ago · Aliganj</small>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div class="friend-rank-badge rank-i">Intermediate</div>
+              <div style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--text-dim);margin-top:0.3rem;">1,542 ELO</div>
+            </div>
+          </div>
+          <div class="friend-row">
+            <div class="friend-info">
+              <div class="online-dot online pulse"></div>
+              <div class="avatar" style="width:32px;height:32px;background:rgba(34,197,94,0.15);color:#4ade80;font-size:0.65rem;">NK</div>
+              <div>
+                <div class="friend-name">Nidhi Kapoor</div>
+                <small style="font-size:0.7rem;color:var(--text-dim);">Playing now · Club Cue</small>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div class="friend-rank-badge rank-i">Intermediate</div>
+              <div style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--text-dim);margin-top:0.3rem;">1,680 ELO</div>
+            </div>
+          </div>
+          <div class="friend-row">
+            <div class="friend-info">
+              <div class="online-dot offline"></div>
+              <div class="avatar" style="width:32px;height:32px;background:rgba(200,168,75,0.15);color:var(--gold);font-size:0.65rem;">VT</div>
+              <div>
+                <div class="friend-name">Varun Tiwari</div>
+                <small style="font-size:0.7rem;color:var(--text-dim);">Offline · Indiranagar</small>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div class="friend-rank-badge rank-b">Beginner</div>
+              <div style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--text-dim);margin-top:0.3rem;">980 ELO</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FRIEND COMPARE -->
+      <div style="margin-top:1rem; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.5rem;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:0.06em; color:var(--text); margin-bottom:1.2rem;">Friend vs. Your Stats</div>
+        <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.8rem;">
+          <div style="flex:1; text-align:right; font-size:0.8rem; color:var(--text-muted);">Rohan</div>
+          <div style="width:60px; text-align:center; font-size:0.7rem; color:var(--text-dim);">ELO</div>
+          <div style="flex:1; font-size:0.8rem; color:var(--gold);">You</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.6rem;">
+          <div style="flex:1; text-align:right;">
+            <div style="height:6px; background:#c084fc; border-radius:3px; float:right; width:90%;"></div>
+          </div>
+          <div style="width:60px; text-align:center; font-size:0.7rem; color:var(--text-dim); flex-shrink:0;">2,280</div>
+          <div style="flex:1;">
+            <div style="height:6px; background:var(--gold-dim); border-radius:3px; width:80%;"></div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.6rem; font-size:0.7rem; color:var(--text-dim);">
+          <div style="flex:1; text-align:right;">75% (15W)</div>
+          <div style="width:60px; text-align:center; flex-shrink:0;">Win Rate</div>
+          <div style="flex:1;">64% (9W)</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:1rem; font-size:0.7rem; color:var(--text-dim);">
+          <div style="flex:1; text-align:right;">8 match streak</div>
+          <div style="width:60px; text-align:center; flex-shrink:0;">Streak</div>
+          <div style="flex:1;">3 match streak</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHALLENGE PANEL -->
+    <div class="challenge-panel">
+      <div class="challenge-title">Send a Challenge</div>
+
+      <div style="font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:0.8rem; font-family:'Space Mono',monospace;">Challenger</div>
+      <div class="challenge-player">
+        <div class="avatar" style="background:rgba(200,168,75,0.15); color:var(--gold);">YOU</div>
+        <div>
+          <div style="font-size:0.9rem; color:var(--text);">You</div>
+          <div style="font-size:0.72rem; color:var(--text-dim);">Elite · 1,998 ELO</div>
+        </div>
+      </div>
+
+      <div class="vs-divider">VS</div>
+
+      <div style="font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:0.8rem; font-family:'Space Mono',monospace;">Select Opponent</div>
+      <select id="opponent-select" style="width:100%; background:var(--surface3); border:1px solid var(--border2); color:var(--text); font-size:0.85rem; padding:0.7rem 1rem; border-radius:6px; font-family:'DM Sans',sans-serif; margin-bottom:0.8rem; outline:none;">
+        <option value="">— Pick a friend —</option>
+        <option value="rs">Rohan Singh (#2 Elite · Online)</option>
+        <option value="am">Ankit Mishra (Intermediate)</option>
+        <option value="nk">Nidhi Kapoor (Intermediate · Playing)</option>
+        <option value="vt">Varun Tiwari (Beginner)</option>
+      </select>
+
+      <div style="margin-bottom:1rem;">
+        <select style="width:100%; background:var(--surface3); border:1px solid var(--border2); color:var(--text); font-size:0.85rem; padding:0.7rem 1rem; border-radius:6px; font-family:'DM Sans',sans-serif; outline:none;">
+          <option>Best of 3</option>
+          <option>Best of 5</option>
+        </select>
+      </div>
+
+      <div class="bid-section">
+        <div class="bid-label">Match Entry Fee (per player, min ₹50)</div>
+        <div class="bid-input-row">
+          <span class="rupee">₹</span>
+          <input class="bid-input" id="bid-amt" type="number" min="50" value="100">
+        </div>
+        <div class="bid-note" id="bid-breakdown">
+          Winner takes <strong>₹180</strong> &nbsp;·&nbsp; CueBall platform fee <strong>₹20</strong> (10%)
+        </div>
+      </div>
+
+      <select style="width:100%; background:var(--surface3); border:1px solid var(--border2); color:var(--text); font-size:0.85rem; padding:0.7rem 1rem; border-radius:6px; font-family:'DM Sans',sans-serif; margin-bottom:1rem; outline:none;">
+        <option>Venue: Auto-select nearest open table</option>
+        <option>Venue: Club Cue, Hazratganj (0.8 km)</option>
+        <option>Venue: The Break Room, Aliganj (2.1 km)</option>
+      </select>
+
+      <button class="btn-primary" style="width:100%;" onclick="sendChallenge()">Send Challenge ↗</button>
+
+      <div style="margin-top:1rem; font-size:0.75rem; color:var(--text-dim); text-align:center;">Opponent receives a push notification. Entry fee is held in escrow until match is confirmed by the venue host.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SEASON BAR -->
+<div class="season-bar">
+  <div class="season-info">
+    <div>
+      <div class="season-label">Current Season</div>
+      <div class="season-name">SEASON III — MONSOON CUP</div>
+    </div>
+    <div style="font-size:0.8rem; color:var(--text-muted); max-width:280px; line-height:1.6;">3-month cycle. Top 10% promoted. ELO resets partially between seasons.</div>
+  </div>
+  <div class="season-timer">
+    <div class="timer-block">
+      <div class="timer-num">47</div>
+      <div class="timer-unit">Days</div>
+    </div>
+    <div class="timer-block">
+      <div class="timer-num">14</div>
+      <div class="timer-unit">Hours</div>
+    </div>
+    <div class="timer-block">
+      <div class="timer-num">32</div>
+      <div class="timer-unit">Min</div>
+    </div>
+  </div>
+</div>
+
+<!-- VENUES -->
+<div class="venue-map-section" id="venues">
+  <div class="venue-inner">
+    <div class="section-tag">// find a table</div>
+    <h2 class="section-title" style="margin-top:0.5rem;">VENUES <em>NEAR YOU</em></h2>
+    <p class="section-desc">Every player within 3–4 km of an official ranked venue. Real-time availability. GPS-powered.</p>
+
+    <div class="venue-layout">
+      <div>
+        <div class="map-mockup">
+          <div class="map-grid"></div>
+          <div class="map-label">LUCKNOW — HAZRATGANJ</div>
+
+          <!-- pins -->
+          <div class="map-pin pin-green" style="left:35%;top:40%;" title="Club Cue"></div>
+          <div class="map-pin pin-green" style="left:55%;top:30%;" title="The Break Room"></div>
+          <div class="map-pin pin-yellow" style="left:70%;top:55%;" title="Snooker Zone"></div>
+          <div class="map-pin pin-red" style="left:30%;top:65%;" title="Table Masters"></div>
+          <div class="map-pin pin-green" style="left:80%;top:35%;" title="Gomti Cue Club"></div>
+
+          <!-- YOU pin -->
+          <div style="position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);">
+            <div style="width:18px;height:18px;border-radius:50%;background:#3b82f6;border:3px solid white;box-shadow:0 0 0 6px rgba(59,130,246,0.2);"></div>
+          </div>
+
+          <!-- tooltip -->
+          <div class="map-tooltip" style="left:38%;top:18%;">
+            <div class="map-tooltip-name">The Break Room</div>
+            <div class="map-tooltip-dist">2.1 km · Aliganj</div>
+            <div class="map-tooltip-avail" style="color:var(--green);">● 3 tables available</div>
+          </div>
+
+          <div style="position:absolute;bottom:1rem;right:1rem;font-family:'Space Mono',monospace;font-size:0.6rem;color:rgba(34,197,94,0.3);">● YOU</div>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green);"></div>Tables open</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div>Limited</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--red);"></div>Full</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--blue);"></div>You</div>
+        </div>
+      </div>
+
+      <div class="venue-list">
+        <div class="venue-card">
+          <div>
+            <div class="venue-name">Club Cue ✦ Ranked</div>
+            <div class="venue-dist">0.8 km · Hazratganj</div>
+            <div class="venue-details">5 tables · Open 10am–11pm · ₹ of pool to venue</div>
+          </div>
+          <div class="avail-dot green"></div>
+        </div>
+        <div class="venue-card">
+          <div>
+            <div class="venue-name">The Break Room ✦ Ranked</div>
+            <div class="venue-dist">2.1 km · Aliganj</div>
+            <div class="venue-details">3 tables · Open 11am–12am · Peak: 6–9pm</div>
+          </div>
+          <div class="avail-dot green"></div>
+        </div>
+        <div class="venue-card">
+          <div>
+            <div class="venue-name">Snooker Zone</div>
+            <div class="venue-dist">3.2 km · Gomti Nagar</div>
+            <div class="venue-details">4 tables · Open 12pm–11pm · Off-peak hrs priority</div>
+          </div>
+          <div class="avail-dot yellow"></div>
+        </div>
+        <div class="venue-card">
+          <div>
+            <div class="venue-name">Table Masters</div>
+            <div class="venue-dist">3.8 km · Indira Nagar</div>
+            <div class="venue-details">6 tables · Currently full</div>
+          </div>
+          <div class="avail-dot red"></div>
+        </div>
+
+        <div style="background:rgba(200,168,75,0.06); border:1px solid rgba(200,168,75,0.15); border-radius:8px; padding:1.2rem; margin-top:0.5rem;">
+          <div style="font-size:0.78rem; color:var(--gold); font-weight:500; margin-bottom:0.4rem;">✦ Official Ranked Venue Badge</div>
+          <div style="font-size:0.78rem; color:var(--text-muted); line-height:1.6;">Venues with this badge host official ELO matches, follow the CueBall rulebook, and have a verified host who confirms results.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="section-tag">// monetization</div>
+  <h2 class="section-title">SIMPLE <em>PRICING</em></h2>
+  <p class="section-desc">No subscriptions. Both players pay an equal entry fee — winner takes all. CueBall earns a flat 10% platform fee per match.</p>
+
+  <div class="commission-box">
+    <div>
+      <div style="font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:1rem; font-family:'Space Mono',monospace;">How the entry fee works</div>
+      <div class="commission-flow">
+        <div class="flow-box">
+          <div class="amount">₹100</div>
+          <div class="desc">Entry fee each</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">
+          <div class="amount">₹200</div>
+          <div class="desc">Total pool</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box" style="border-color:var(--gold-dim);">
+          <div class="amount" style="color:var(--gold);">₹180</div>
+          <div class="desc">Winner takes</div>
+        </div>
+        <div class="flow-arrow">+</div>
+        <div class="flow-box">
+          <div class="amount">₹20</div>
+          <div class="desc">CueBall (10%)</div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:3rem; color:var(--gold); line-height:1;">10%</div>
+      <div style="font-size:0.72rem; color:var(--text-dim); letter-spacing:0.08em; text-transform:uppercase;">Commission only</div>
+    </div>
+  </div>
+
+  <div class="pricing-grid" style="margin-top:2rem; grid-template-columns: repeat(2,1fr);">
+    <div class="price-card featured">
+      <div class="price-tag-label">Standard</div>
+      <div class="price-name">Ranked Match</div>
+      <div class="price-amount">₹50<span>+ entry</span></div>
+      <div class="price-period">Min ₹50 each · Custom amount · Best of 3</div>
+      <ul class="price-features">
+        <li>Official ELO ranking update</li>
+        <li>Venue host confirms result</li>
+        <li>QR check-in + match record</li>
+        <li>Leaderboard visibility</li>
+        <li>Season promotion eligibility</li>
+      </ul>
+    </div>
+    <div class="price-card">
+      <div class="price-name">Elite Match</div>
+      <div class="price-amount">₹200<span>+ custom</span></div>
+      <div class="price-period">18+ · Elite tier only · Best of 5</div>
+      <ul class="price-features">
+        <li>Custom entry fee, no upper limit</li>
+        <li>Higher visibility matches</li>
+        <li>Priority venue booking</li>
+        <li>Featured on city leaderboard</li>
+        <li>Streamed to spectators (soon)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INTEGRITY -->
+<section class="integrity-section" id="integrity">
+  <div class="section-tag">// trust system</div>
+  <h2 class="section-title">BUILT ON <em>INTEGRITY</em></h2>
+  <p class="section-desc">Fair results, verified by venues. No self-reporting manipulation.</p>
+
+  <div class="integrity-grid">
+    <div class="integrity-card">
+      <div class="integrity-icon" style="background:rgba(34,197,94,0.1);">📱</div>
+      <div class="integrity-card-title">QR Check-In Flow</div>
+      <div class="integrity-card-desc">Both players scan the venue QR on arrival. Match is registered in the system before a single ball is potted.</div>
+      <div class="qr-flow" style="margin-top:1.2rem;">
+        <div class="qr-step"><div class="qr-step-num">01</div><div class="qr-step-label">Arrive at venue</div></div>
+        <div class="qr-step"><div class="qr-step-num">02</div><div class="qr-step-label">Both scan QR</div></div>
+        <div class="qr-step"><div class="qr-step-num">03</div><div class="qr-step-label">Match registered</div></div>
+        <div class="qr-step"><div class="qr-step-num">04</div><div class="qr-step-label">Play begins</div></div>
+      </div>
+    </div>
+
+    <div class="integrity-card">
+      <div class="integrity-icon" style="background:rgba(200,168,75,0.1);">🏅</div>
+      <div class="integrity-card-title">Venue Host Confirms Result</div>
+      <div class="integrity-card-desc">Every ranked match result is confirmed by the venue host — not self-reported by players. Hosts receive a digital prompt on their device the moment a match ends. Results upload instantly to leaderboard.</div>
+    </div>
+
+    <div class="integrity-card">
+      <div class="integrity-icon" style="background:rgba(59,130,246,0.1);">⭐</div>
+      <div class="integrity-card-title">Player Reputation Score</div>
+      <div class="integrity-card-desc">Beyond ELO — your reputation score tracks sportsmanship, punctuality, and fair play. Players with high reputation get priority matching and venue preference.</div>
+    </div>
+
+    <div class="integrity-card">
+      <div class="integrity-icon" style="background:rgba(239,68,68,0.1);">🚫</div>
+      <div class="integrity-card-title">Report & Ban System</div>
+      <div class="integrity-card-desc">4-tier enforcement. Every reported incident is reviewed within 24 hours.</div>
+      <div class="ban-tiers">
+        <div class="ban-tier">
+          <div class="ban-tier-name" style="color:#f59e0b;">Warning</div>
+          <div class="ban-tier-desc">1st offence · Formal notice</div>
+        </div>
+        <div class="ban-tier">
+          <div class="ban-tier-name" style="color:#f97316;">Review</div>
+          <div class="ban-tier-desc">2nd · Match history audit</div>
+        </div>
+        <div class="ban-tier">
+          <div class="ban-tier-name" style="color:var(--red);">Suspend</div>
+          <div class="ban-tier-desc">3rd · 30-day ban</div>
+        </div>
+        <div class="ban-tier">
+          <div class="ban-tier-name" style="color:#dc2626;">Banned</div>
+          <div class="ban-tier-desc">Permanent removal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">CueBall</div>
+    <div class="footer-tagline">India's Competitive Pool Network · Lucknow, UP</div>
+    <div style="margin-top:1rem; font-size:0.75rem; color:var(--text-dim); line-height:1.7;">
+      18+ for Elite matches · Skill-based competition · Entry fee model<br>
+      GST registered · TDS applicable above ₹10,000 winnings
+    </div>
+  </div>
+  <div class="footer-links">
+    <a href="#">Rulebook PDF</a>
+    <a href="#">Venue Partners</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Live entry fee calculator
+  const bidInput = document.getElementById('bid-amt');
+  const breakdown = document.getElementById('bid-breakdown');
+
+  if (bidInput) {
+    bidInput.addEventListener('input', () => {
+      const each = parseFloat(bidInput.value) || 0;
+      if (each < 50) { breakdown.innerHTML = '<span style="color:var(--red)">Minimum entry fee is ₹50</span>'; return; }
+      const pool = each * 2;
+      const commission = Math.round(pool * 0.1);
+      const winner = pool - commission;
+      breakdown.innerHTML = `Winner takes <strong>₹${winner}</strong> &nbsp;·&nbsp; CueBall platform fee <strong>₹${commission}</strong> (10%)`;
+    });
+  }
+
+  // Add friend
+  function addFriend() {
+    const name = prompt('Enter player username or phone number:');
+    if (!name || !name.trim()) return;
+    const list = document.getElementById('friends-list');
+    const initials = name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2) || 'PL';
+    const colors = ['rgba(168,85,247,0.2)/color:#c084fc', 'rgba(59,130,246,0.15)/color:#60a5fa', 'rgba(34,197,94,0.15)/color:#4ade80'];
+    const c = colors[Math.floor(Math.random() * colors.length)].split('/');
+    const row = document.createElement('div');
+    row.className = 'friend-row';
+    row.innerHTML = `
+      <div class="friend-info">
+        <div class="online-dot offline"></div>
+        <div class="avatar" style="width:32px;height:32px;background:${c[0]};${c[1]};font-size:0.65rem;">${initials}</div>
+        <div>
+          <div class="friend-name">${name.trim()}</div>
+          <small style="font-size:0.7rem;color:var(--text-dim);">Request sent · Pending</small>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div class="friend-rank-badge rank-b">Pending</div>
+      </div>
+    `;
+    list.appendChild(row);
+  }
+
+  // Challenge
+  function sendChallenge() {
+    const opp = document.getElementById('opponent-select');
+    const feeInput = document.getElementById('bid-amt');
+    if (!opp.value) { alert('Please select an opponent!'); return; }
+    const amt = parseFloat(feeInput.value);
+    if (amt < 50) { alert('Minimum entry fee is ₹50!'); return; }
+    const names = { rs: 'Rohan Singh', am: 'Ankit Mishra', nk: 'Nidhi Kapoor', vt: 'Varun Tiwari' };
+    alert(`Challenge sent to ${names[opp.value]}!\n\nEntry fee: ₹${amt} per player\nTotal prize pool: ₹${amt*2}\nWinner takes: ₹${Math.round(amt*2*0.9)}\n\nWaiting for opponent to accept...`);
+  }
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body>
+</html>
